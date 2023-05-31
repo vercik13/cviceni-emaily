@@ -1,47 +1,36 @@
-const showUnread = (unreadEmails) => {
-  const unreadElm = document.querySelector('#unread');
-    unreadElm.innerHTML = unreadEmails.map((unreadEmail) => `
+const showEmails = (emails, idElm) => {
+  document.getElementById(idElm).innerHTML = emails
+    .map((email) => {
+      let iconState = 'closed';
+      if ( idElm === 'read') {
+        iconState = 'opened'
+      }
+      return `
       <div class="email">
       <div class="email__head">
-        <button class="email__icon email__icon--closed"></button>
+        <button class="email__icon email__icon--${iconState}"></button>
         <div class="email__info">
-          <div class="email__sender">${unreadEmail.sender.name}</div>
-          <div class="email__subject">${unreadEmail.subject}</div>
+          <div class="email__sender">${email.sender.name}</div>
+          <div class="email__subject">${email.subject}</div>
         </div>
-        <div class="email__time">${unreadEmail.time}</div>
+        <div class="email__time">${email.time}</div>
       </div>
       <div class="email__body"></div>
       </div>
       `
-    ).join('');
-}
-  
+    })
+    .join('');
+};
+
 fetch('https://apps.kodim.cz/daweb/trening-api/apis/emails?folder=unread')
 .then((response) => response.json())
 .then ((data) => {
-  showUnread(data.emails)
+  showEmails(data.emails, 'unread')
 })
 
-
-const showRead = (readEmails) => {
-  const readElm = document.querySelector('#read');
-    readElm.innerHTML = readEmails.map((readEmail) => `
-    <div class="email">
-      <div class="email__head">
-        <button class="email__icon email__icon--opened"></button>
-        <div class="email__info">
-          <div class="email__sender">${readEmail.sender.name}</div>
-          <div class="email__subject">${readEmail.subject}</div>
-        </div>
-        <div class="email__time">${readEmail.time}</div>
-      </div>
-      <div class="email__body"></div>
-    </div>
-    `).join('')
-}
 
 fetch('https://apps.kodim.cz/daweb/trening-api/apis/emails?folder=read')
 .then((response) => response.json())
 .then((data) => {
-  showRead(data.emails)
+  showEmails(data.emails, 'read')
 })
